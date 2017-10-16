@@ -21,7 +21,7 @@ class Manager():
     timer = None
 
     def __init__(self):
-        # self.device = pysimpledmx.DMXConnection("/dev/ttyUSB0")
+        self.device = pysimpledmx.DMXConnection("/dev/ttyUSB0")
         for fixture in PATCH:
             self.fixtures[fixture[0]] = fixture[2](self, fixture[1])
 
@@ -78,5 +78,5 @@ class Manager():
         self.render()
 
     def render(self):
-        # self.device.render()
-        pass
+        self.device.render()
+

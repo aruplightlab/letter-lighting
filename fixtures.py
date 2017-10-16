@@ -18,10 +18,9 @@ class Fixture():
                 self.params[param]["value"] = value
             else:
                 value = self.params[param]["value"]
-            # self.manager.device.setChannel(
-            #    self.start_addr + param,
-            #    value)
-        print("params set", self.start_addr, self.params)
+            chan = self.start_addr + param + 1
+            self.manager.device.setChannel(int(chan), int(value))
+        # print("params set", self.start_addr, self.params)
 
     def transition_start(self):
         for param in self.params:

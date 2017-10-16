@@ -21,7 +21,7 @@ pip install -r requirements.txt >>setup.log 2>>setup.log
 
 echo 'Copying configuration files...'
 
-cp ./letter-lighting.init.sh /etc/init.d/letter-lighting
+cp ./letter-lighting.init /etc/init.d/letter-lighting
 chmod 755 /etc/init.d/letter-lighting
 update-rc.d letter-lighting defaults
 
