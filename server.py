@@ -1,13 +1,11 @@
-# lighting control passthough (halcyon and xim)
-# Ben Hussey - Sept 16
+# dmx lighting control
+# Ben Hussey - Oct 17
 from bottle import route, run, HTTPError
 from fixture_manager import Manager
 
 manager = Manager()
 manager.set_state(0)
 manager.change()
-manager.set_state(1)
-manager.transition()
 
 
 @route('/level/<fixture>/<level>/')
@@ -30,7 +28,7 @@ def color(fixture, color):
 
 @route('/state/<state>/')
 def state(state):
-    manager.set_state(int(state))
+    manager.set_state(state)
     manager.transition()
 
 

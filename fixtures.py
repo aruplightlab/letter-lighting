@@ -74,6 +74,9 @@ class RGBFixture(Fixture):
 
     def set_level(self, level):
         self.virtual_dimmer = (level / 255)
+        self.adjust_level()
+
+    def adjust_level(self):
         for param in self.params:
             p = self.params[param]
             if "value_nondim" not in p:
@@ -84,7 +87,7 @@ class RGBFixture(Fixture):
         color = tuple(int(color[i:i + 2], 16) for i in (0, 2, 4))
         for param in self.params:
             self.params[param]["value_nondim"] = color[param]
-        self.set_level()
+        self.adjust_level()
 
 
 class RGBWFixture(Fixture):

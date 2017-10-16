@@ -1,16 +1,17 @@
 import pysimpledmx
 from threading import Timer
 from fixtures import RGBFixture, RGBWFixture
+from states import STATE_LIST
 
 PATCH = [
     (1, 1, RGBWFixture),
-    # (2, 5, RGBFixture),
-    # (3, 8, RGBWFixture),
-    # (4, 12, RGBFixture),
-    # (5, 15, RGBWFixture),
-    # (6, 19, RGBFixture),
-    # (7, 22, RGBWFixture),
-    # (8, 26, RGBFixture),
+    (2, 5, RGBFixture),
+    (3, 8, RGBWFixture),
+    (4, 12, RGBFixture),
+    (5, 15, RGBWFixture),
+    (6, 19, RGBFixture),
+    (7, 22, RGBWFixture),
+    (8, 26, RGBFixture),
 ]
 
 
@@ -25,10 +26,15 @@ class Manager():
             self.fixtures[fixture[0]] = fixture[2](self, fixture[1])
 
     def set_state(self, state):
-        if state:
+        if state in STATE_LIST:
+            s = STATE_LIST[state]
             for fixture in self.fixtures:
-                self.fixtures[fixture].set_level(255)
-                self.fixtures[fixture].set_color("FF0000")
+                if fixture in s:
+                    self.fixtures[fixture].set_level(s[fixture]["level"])
+                    self.fixtures[fixture].set_color(s[fixture]["color"])
+                else:
+                    self.fixtures[fixture].set_level(s["level"])
+                    self.fixtures[fixture].set_color(s["color"])
         else:
             for fixture in self.fixtures:
                 self.fixtures[fixture].set_level(0)
@@ -41,8 +47,8 @@ class Manager():
     def transition(self):
         if self.transition_count:
             self.transition_finish()
-        # default transition in 10 steps / 1 second
-        self.transition_count = 9
+        # default transition in 20 steps in 1 second
+        self.transition_count = 19
         for fixture in self.fixtures:
             self.fixtures[fixture].transition_start()
         self.transition_step()
@@ -56,7 +62,7 @@ class Manager():
 
         if self.transition_count:
             self.render()
-            self.timer = Timer(0.1, self.transition_step)
+            self.timer = Timer(0.05, self.transition_step)
             self.timer.start()
         else:
             self.transition_finish()
@@ -73,4 +79,4 @@ class Manager():
 
     def render(self):
         # self.device.render()
-        print("rendered")
+        pass
