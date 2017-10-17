@@ -1,26 +1,42 @@
 STATE_LIST = {
     "1": {
-        1: {
+        "1": {
             "level": 255,
-            "color": "FF00FF",
+            "color": "acb2ff",
         },
-        3: {
+        "2": {
             "level": 255,
-            "color": "FF00FF",
+            "color": "ff00ff",
         },
-        5: {
+        "3": {
             "level": 255,
-            "color": "FF00FF",
+            "color": "acb2ff",
         },
-        7: {
+        "4": {
             "level": 255,
-            "color": "FF00FF",
+            "color": "ffd700",
         },
-        "level": 50,
+        "5": {
+            "level": 255,
+            "color": "acb2ff",
+	},
+        "6": {
+	    "level": 255,
+	    "color": "ffb432",
+        },
+        "7": {
+            "level": 255,
+            "color": "acb2ff",
+        },
+        "8": {
+            "level": 255,
+            "color": "aaaaff",
+        },
+        "level": 100,
         "color": "0000FF",
     },
     "2": {
         "level": 255,
-        "color": "0000FF",
+        "color": "FF00FF",
     },
 }

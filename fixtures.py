@@ -1,15 +1,17 @@
 class Fixture():
-    start_addr = 1
-    params = {
+    initial_params = {
         0: {
             'name': 'dimmer',
             'value': 255,
         },
     }
 
-    def __init__(self, manager, start_addr):
+    def __init__(self, uid, manager, start_addr):
+        self.uid = uid
         self.start_addr = start_addr
         self.manager = manager
+        self.virtual_dimmer = 1
+        self.params = self.initial_params.copy()
 
     def push_values(self):
         for param in self.params:
@@ -20,7 +22,6 @@ class Fixture():
                 value = self.params[param]["value"]
             chan = self.start_addr + param + 1
             self.manager.device.setChannel(int(chan), int(value))
-        # print("params set", self.start_addr, self.params)
 
     def transition_start(self):
         for param in self.params:
@@ -39,6 +40,7 @@ class Fixture():
                 step = int(difference / steps_left)
                 if step:
                     p["value_next"] = p["value"] + step
+        self.push_values()
 
     def transition_finish(self):
         for param in self.params:
@@ -55,8 +57,7 @@ class Fixture():
 
 
 class RGBFixture(Fixture):
-    virtual_dimmer = 1
-    params = {
+    initial_params = {
         0: {
             'name': 'red',
             'value': 255,
@@ -74,6 +75,7 @@ class RGBFixture(Fixture):
     def set_level(self, level):
         self.virtual_dimmer = (level / 255)
         self.adjust_level()
+        self.push_values()
 
     def adjust_level(self):
         for param in self.params:
@@ -87,11 +89,11 @@ class RGBFixture(Fixture):
         for param in self.params:
             self.params[param]["value_nondim"] = color[param]
         self.adjust_level()
+        self.push_values()
 
 
 class RGBWFixture(Fixture):
-    virtual_dimmer = 1
-    params = {
+    initial_params = {
         0: {
             'name': 'red',
             'value': 255,
@@ -113,6 +115,7 @@ class RGBWFixture(Fixture):
     def set_level(self, level):
         self.virtual_dimmer = (level / 255)
         self.adjust_level()
+        self.push_values()
 
     def adjust_level(self):
         for param in self.params:
@@ -127,3 +130,4 @@ class RGBWFixture(Fixture):
         for param in self.params:
             self.params[param]["value_nondim"] = color[param]
         self.adjust_level()
+        self.push_values()
