@@ -4,14 +4,14 @@ from fixtures import RGBFixture, RGBWFixture
 from states import STATE_LIST
 
 PATCH = [
-    (1, 1, "RGBWFixture"),
-    (2, 5, "RGBFixture"),
-    (3, 8, "RGBWFixture"),
-    (4, 12, "RGBFixture"),
-    (5, 15, "RGBWFixture"),
-    (6, 19, "RGBFixture"),
-    (7, 22, "RGBWFixture"),
-    (8, 26, "RGBFixture"),
+    (1, 1, RGBWFixture),
+    (2, 5, RGBFixture),
+    # (3, 8, RGBWFixture),
+    # (4, 12, RGBFixture),
+    # (5, 15, RGBWFixture),
+    # (6, 19, RGBFixture),
+    # (7, 22, RGBWFixture),
+    # (8, 26, RGBFixture),
 ]
 
 
@@ -20,13 +20,14 @@ class Manager():
     transition_count = 0
     timer = None
 
-    def __init__(self):
-        self.device = pysimpledmx.DMXConnection("/dev/ttyUSB0")
+    def __init__(self, debug=False):
+        if not debug:
+            self.device = pysimpledmx.DMXConnection("/dev/ttyUSB0")
+        else:
+            self.device = None
         for fixture in PATCH:
-            if fixture[2] == "RGBWFixture":
-                self.fixtures[str(fixture[0])] = RGBWFixture(fixture[0], self, fixture[1])
-            else:
-                self.fixtures[str(fixture[0])] = RGBFixture(fixture[0], self, fixture[1])
+            self.fixtures[str(fixture[0])] = fixture[2](
+                fixture[0], self, fixture[1])
 
     def set_state(self, state):
         if state in STATE_LIST:
@@ -40,16 +41,19 @@ class Manager():
                     self.fixtures[fixture].set_color(s["color"])
         else:
             for fixture in self.fixtures:
+                self.fixtures[fixture].set_color("000000")
                 self.fixtures[fixture].set_level(0)
 
     def change(self):
+        for fixture in self.fixtures:
+            self.fixtures[fixture].push_values()
         self.render()
 
     def transition(self):
         if self.transition_count:
             self.transition_finish()
         # default transition in 20 steps in 1 second
-        self.transition_count = 40
+        self.transition_count = 20
         for fixture in self.fixtures:
             self.fixtures[fixture].transition_start()
         self.transition_step()
@@ -78,5 +82,7 @@ class Manager():
         self.render()
 
     def render(self):
-        self.device.render()
-
+        if self.device:
+            self.device.render()
+        else:
+            print("------ RENDERED")

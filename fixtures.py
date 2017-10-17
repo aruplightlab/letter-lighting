@@ -2,7 +2,7 @@ class Fixture():
     initial_params = {
         0: {
             'name': 'dimmer',
-            'value': 255,
+            'value': 0,
         },
     }
 
@@ -11,17 +11,23 @@ class Fixture():
         self.start_addr = start_addr
         self.manager = manager
         self.virtual_dimmer = 1
+        self.changed = True
         self.params = self.initial_params.copy()
 
     def push_values(self):
-        for param in self.params:
-            if "value_next" in self.params[param]:
-                value = self.params[param]["value_next"]
-                self.params[param]["value"] = value
-            else:
-                value = self.params[param]["value"]
-            chan = self.start_addr + param + 1
-            self.manager.device.setChannel(int(chan), int(value))
+        if self.changed:
+            for param in self.params:
+                if "value_next" in self.params[param]:
+                    value = self.params[param]["value_next"]
+                    self.params[param]["value"] = value
+                else:
+                    value = self.params[param]["value"]
+                chan = self.start_addr + param + 1
+                self.changed = False
+                if self.manager.device:
+                    self.manager.device.setChannel(int(chan), int(value))
+                else:
+                    print(int(chan), int(value))
 
     def transition_start(self):
         for param in self.params:
@@ -37,6 +43,7 @@ class Fixture():
             p = self.params[param]
             difference = p["value_final"] - p["value"]
             if difference:
+                self.changed = True
                 step = int(difference / steps_left)
                 if step:
                     p["value_next"] = p["value"] + step
@@ -48,6 +55,7 @@ class Fixture():
             if value:
                 self.params[param]["value"] = value
             self.params[param].pop("value_next", None)
+        self.changed = False
 
     def set_level(self, level):
         pass
@@ -60,22 +68,21 @@ class RGBFixture(Fixture):
     initial_params = {
         0: {
             'name': 'red',
-            'value': 255,
+            'value': 0,
         },
         1: {
             'name': 'green',
-            'value': 255,
+            'value': 0,
         },
         2: {
             'name': 'blue',
-            'value': 255,
+            'value': 0,
         },
     }
 
     def set_level(self, level):
-        self.virtual_dimmer = (level / 255)
+        self.virtual_dimmer = float(level) / 255
         self.adjust_level()
-        self.push_values()
 
     def adjust_level(self):
         for param in self.params:
@@ -83,39 +90,38 @@ class RGBFixture(Fixture):
             if "value_nondim" not in p:
                 p["value_nondim"] = p["value"]
             p["value_next"] = int(p["value_nondim"] * self.virtual_dimmer)
+        self.changed = True
 
     def set_color(self, color):
         color = tuple(int(color[i:i + 2], 16) for i in (0, 2, 4))
         for param in self.params:
             self.params[param]["value_nondim"] = color[param]
         self.adjust_level()
-        self.push_values()
 
 
 class RGBWFixture(Fixture):
     initial_params = {
         0: {
             'name': 'red',
-            'value': 255,
+            'value': 0,
         },
         1: {
             'name': 'green',
-            'value': 255,
+            'value': 0,
         },
         2: {
             'name': 'blue',
-            'value': 255,
+            'value': 0,
         },
         3: {
             'name': 'white',
-            'value': 255,
+            'value': 0,
         },
     }
 
     def set_level(self, level):
-        self.virtual_dimmer = (level / 255)
+        self.virtual_dimmer = float(level) / 255
         self.adjust_level()
-        self.push_values()
 
     def adjust_level(self):
         for param in self.params:
@@ -123,6 +129,8 @@ class RGBWFixture(Fixture):
             if "value_nondim" not in p:
                 p["value_nondim"] = p["value"]
             p["value_next"] = int(p["value_nondim"] * self.virtual_dimmer)
+        self.changed = True
+        print(self.virtual_dimmer, self.params)
 
     def set_color(self, color):
         color = tuple(int(color[i:i + 2], 16) for i in (0, 2, 4))
@@ -130,4 +138,3 @@ class RGBWFixture(Fixture):
         for param in self.params:
             self.params[param]["value_nondim"] = color[param]
         self.adjust_level()
-        self.push_values()
