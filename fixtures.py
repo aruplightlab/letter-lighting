@@ -130,7 +130,6 @@ class RGBWFixture(Fixture):
                 p["value_nondim"] = p["value"]
             p["value_next"] = int(p["value_nondim"] * self.virtual_dimmer)
         self.changed = True
-        print(self.virtual_dimmer, self.params)
 
     def set_color(self, color):
         color = tuple(int(color[i:i + 2], 16) for i in (0, 2, 4))
