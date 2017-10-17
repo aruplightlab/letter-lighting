@@ -4,7 +4,7 @@ from bottle import route, run, HTTPError
 from fixture_manager import Manager
 
 manager = Manager()
-manager.set_state(0)
+manager.set_state('1')
 manager.change()
 
 
