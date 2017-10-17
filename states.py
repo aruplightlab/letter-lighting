@@ -14,7 +14,7 @@ STATE_LIST = {
         },
         "4": {
             "level": 255,
-            "color": "ffd700",
+            "color": "ffff33",
         },
         "5": {
             "level": 255,
@@ -22,7 +22,7 @@ STATE_LIST = {
 	},
         "6": {
 	    "level": 255,
-	    "color": "ffb432",
+	    "color": "ffd851",
         },
         "7": {
             "level": 255,
