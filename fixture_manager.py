@@ -37,7 +37,7 @@ class Manager():
             self.state_timer = None
         if state in STATE_LISTS:
             self.next_state(STATE_LISTS[state], 0)
-        if state in STATE_LIST:
+        elif state in STATE_LIST:
             s = STATE_LIST[state]
             for fixture in self.fixtures:
                 if str(fixture) in s:
@@ -70,7 +70,7 @@ class Manager():
         if self.transition_count:
             self.transition_finish()
         # default transition in 12 steps in 1 second
-        self.transition_count = 12 * time
+        self.transition_count = 15 * time
         for fixture in self.fixtures:
             self.fixtures[fixture].transition_start()
         self.transition_step()
