@@ -64,9 +64,7 @@ class Fixture():
 
     def set_level(self, level):
         self.virtual_dimmer = float(level) / 255
-        # print(self.uid, "level", self.params)
         self.adjust_level()
-        # print(self.uid, "level adjust", self.params)
 
     def adjust_level(self):
         for param in self.params:
@@ -95,13 +93,10 @@ class RGBFixture(Fixture):
     }
 
     def set_color(self, color):
-        # print(self.uid, "color", color)
         color = tuple(int(color[i:i + 2], 16) for i in (0, 2, 4))
         for param in self.params:
             self.params[param]["value_nondim"] = color[param]
-        # print(self.uid, "color", self.params)
         self.adjust_level()
-        # print(self.uid, "color adjust", self.params)
 
 
 class RGBWFixture(Fixture):

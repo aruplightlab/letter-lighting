@@ -3,7 +3,7 @@
 from bottle import route, run, HTTPError
 from fixture_manager import Manager
 
-manager = Manager(debug=False)
+manager = Manager(debug=True)
 manager.set_state('1')
 manager.transition()
 manager.set_state('99')

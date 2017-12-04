@@ -4,14 +4,14 @@ from fixtures import RGBFixture, RGBWFixture
 from states import STATE_LIST, STATE_LISTS
 
 PATCH = [
-    (1, 1, RGBWFixture),
+    # (1, 1, RGBWFixture),
     (2, 5, RGBFixture),
-    (3, 8, RGBWFixture),
+    # (3, 8, RGBWFixture),
     (4, 12, RGBFixture),
-    (5, 15, RGBWFixture),
-    (6, 19, RGBFixture),
-    (7, 22, RGBWFixture),
-    (8, 26, RGBFixture),
+    # (5, 15, RGBWFixture),
+    # (6, 19, RGBFixture),
+    # (7, 22, RGBWFixture),
+    # (8, 26, RGBFixture),
 ]
 
 
@@ -40,12 +40,15 @@ class Manager():
         elif state in STATE_LIST:
             s = STATE_LIST[state]
             for fixture in self.fixtures:
+                f = self.fixtures[fixture]
                 if str(fixture) in s:
-                    self.fixtures[fixture].set_level(s[str(fixture)]["level"])
-                    self.fixtures[fixture].set_color(s[str(fixture)]["color"])
+                    print(f.uid, "pre", f.params)
+                    f.set_level(s[str(fixture)]["level"])
+                    f.set_color(s[str(fixture)]["color"])
+                    print(f.uid, "post", f.params)
                 elif "level" in s and "color" in s:
-                    self.fixtures[fixture].set_level(s["level"])
-                    self.fixtures[fixture].set_color(s["color"])
+                    f.set_level(s["level"])
+                    f.set_color(s["color"])
         else:
             for fixture in self.fixtures:
                 self.fixtures[fixture].set_color("000000")
@@ -70,7 +73,10 @@ class Manager():
         if self.transition_count:
             self.transition_finish()
         # default transition in 12 steps in 1 second
-        self.transition_count = 15 * time
+        if self.device:
+            self.transition_count = 15 * time
+        else:
+            self.transition_count = 2
         for fixture in self.fixtures:
             self.fixtures[fixture].transition_start()
         self.transition_step()
